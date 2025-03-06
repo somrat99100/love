@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
+  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-E0E31H7GXS"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -9,18 +9,21 @@
     gtag('js', new Date());
     gtag('config', 'G-E0E31H7GXS');
   </script>
-  <meta name="keywords" content="game, love game, prank game, interactive game, fun game">
+
+  <!-- SEO Meta Tags -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A fun and interactive love game! Click Yes or No and enjoy surprises.">
+  <meta name="keywords" content="love game, prank game, interactive game, fun game, romantic game">
   <meta name="author" content="Somrat">
+
+  <!-- Open Graph for Social Sharing -->
   <meta property="og:title" content="Do You Love Me? - Fun Interactive Game">
-  <meta property="og:description" content="A fun and interactive game: Click Yes or No and enjoy the surprises!">
+  <meta property="og:description" content="A fun and interactive love game where you answer Yes or No!">
   <meta property="og:image" content="https://lovegame99.netlify.app/image.png">
   <meta property="og:url" content="https://lovegame99.netlify.app/">
   <meta name="twitter:card" content="summary_large_image">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="A fun and interactive game: Click Yes or No and enjoy the surprises!">
-  <meta name="keywords" content="game, love game, prank game, interactive game, fun game">
-  <meta name="author" content="Somrat">
+
   <title>Do You Love Me? - Fun Interactive Game</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -30,16 +33,16 @@
   <div class="heart-container"></div>
 
   <div class="container">
-    <img src="image.png" alt="Love Image" class="top-image">
+    <img src="image.png" alt="Romantic Love Image" class="top-image">
     <h1>Do you love me? ❤️</h1>
     <button id="yesButton" aria-label="Yes button">Yes</button>
     <button id="noButton" aria-label="No button">No</button>
   </div>
 
-  <!-- Confetti -->
+  <!-- Confetti Canvas (Overlay) -->
   <canvas id="confettiCanvas"></canvas>
 
-  <!-- Custom Modal -->
+  <!-- Modal -->
   <div id="customModal" class="modal" aria-live="polite">
     <div class="modal-content">
       <span id="modalText"></span>
@@ -53,7 +56,7 @@
 
   <!-- Audio -->
   <audio id="yesSound" src="yes-sound.mp3"></audio>
-  <audio id="noSound" src="no-sound.mp3"></audio>
+  <audio id="noSound" src="no-sound.mp3.mp3"></audio>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -82,7 +85,7 @@
         noButton.style.top = `${y}px`;
       });
 
-      // Floating Hearts
+      // Floating Hearts Effect
       const heartContainer = document.querySelector(".heart-container");
       setInterval(() => {
         const heart = document.createElement("div");
@@ -94,7 +97,7 @@
       }, 500);
     });
 
-    // Confetti Effect
+    // Confetti Effect (Fix: Does Not Move Content)
     function startConfetti() {
       const canvas = document.getElementById("confettiCanvas");
       const ctx = canvas.getContext("2d");
@@ -122,15 +125,31 @@
   </script>
 
   <style>
+    /* General Styling */
     body {
       font-family: Arial, sans-serif;
       text-align: center;
       background: linear-gradient(to right, #ff9a9e, #fad0c4);
       overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
+
+    /* Main Container - Centered */
     .container {
-      margin-top: 50px;
+      position: relative;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      width: 300px;
     }
+
+    /* Buttons */
     button {
       padding: 10px 20px;
       margin: 10px;
@@ -140,17 +159,23 @@
       border-radius: 10px;
       transition: transform 0.3s;
     }
+
     #yesButton {
       background-color: #ff4b5c;
       color: white;
     }
+
     #yesButton:hover {
       transform: scale(1.1);
     }
+
     #noButton {
       background-color: #444;
       color: white;
+      position: relative;
     }
+
+    /* Modal */
     .modal {
       display: none;
       position: fixed;
@@ -162,29 +187,15 @@
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
-    .heart-container {
+
+    /* Confetti Canvas */
+    #confettiCanvas {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       pointer-events: none;
-      overflow: hidden;
-    }
-    .heart {
-      position: absolute;
-      bottom: -10px;
-      width: 20px;
-      height: 20px;
-      background: red;
-      clip-path: polygon(50% 0%, 100% 40%, 75% 100%, 50% 80%, 25% 100%, 0% 40%);
-      opacity: 0.7;
-      animation: float 5s linear infinite;
-    }
-    @keyframes float {
-      to {
-        transform: translateY(-100vh);
-      }
     }
   </style>
 
