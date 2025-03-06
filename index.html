@@ -45,7 +45,7 @@
       // Start music when user interacts
       window.startMusic = () => {
         if (bgMusic.paused) {
-          bgMusic.volume = 1.0; // Ensure full volume when starting
+          bgMusic.volume = 1.0;
           bgMusic.play().catch(error => console.log("Music autoplay blocked:", error));
         }
       };
@@ -62,11 +62,10 @@
             volume -= 0.1;
             bgMusic.volume = volume;
           } else {
-            clearInterval(fadeOut); // Stop reducing volume
+            clearInterval(fadeOut);
           }
-        }, 300); // Reduce volume every 300ms
+        }, 300);
 
-        // Play cheerful music
         let cheerMusic = new Audio("yes-sound.mp3.mp3");
         cheerMusic.play();
       });
@@ -78,8 +77,8 @@
         const btnWidth = noButton.offsetWidth;
         const btnHeight = noButton.offsetHeight;
 
-        let newX = Math.random() * (containerRect.width - btnWidth);
-        let newY = Math.random() * (containerRect.height - btnHeight - 10); // Keeps button inside container
+        let newX = Math.random() * (containerRect.width - btnWidth - 20);
+        let newY = Math.random() * (containerRect.height - btnHeight - 20);
 
         noButton.style.position = "absolute";
         noButton.style.left = `${newX}px`;
@@ -99,7 +98,7 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      overflow: hidden; /* Prevents scrolling */
+      overflow: hidden;
     }
 
     /* Main Game Container */
@@ -117,8 +116,8 @@
 
     .button-container {
       position: relative;
-      height: 80px;
       width: 100%;
+      height: 80px;
     }
 
     /* Buttons */
