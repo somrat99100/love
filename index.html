@@ -42,7 +42,7 @@
 
   <!-- Share Button -->
   <div id="shareButton" class="hidden">
-    <button onclick="shareLove()">Share your love!</button>
+    <button onclick="shareLove()">Share Love - By Somrat</button>
   </div>
 
   <footer>
@@ -71,11 +71,11 @@
         confetti.classList.remove("hidden"); // Show confetti
         shareButton.classList.remove("hidden"); // Show share button
         bgMusic.pause();
-        let cheerMusic = new Audio("cheerful-music.mp3");
+        let cheerMusic = new Audio("yes-sound.mp3.mp3");
         cheerMusic.play();
       });
 
-      // No Button Moves - But Stays Inside Main Content Area
+      // No Button Moves - But Stays Inside Safe Area
       noButton.addEventListener("mouseover", () => {
         const screenHeight = window.innerHeight;
         const screenWidth = window.innerWidth;
@@ -87,9 +87,10 @@
         let newX = Math.random() * (screenWidth - btnWidth);
         let newY = Math.random() * (screenHeight - btnHeight - footerHeight - headerHeight) + headerHeight;
 
-        // Ensure button never goes outside safe area
-        newX = Math.max(10, Math.min(newX, screenWidth - btnWidth - 10));
-        newY = Math.max(headerHeight + 10, Math.min(newY, screenHeight - footerHeight - btnHeight - 10));
+        // Ensure button never goes inside footer
+        if (newY > screenHeight - footerHeight - btnHeight) {
+          newY = screenHeight - footerHeight - btnHeight - 10;
+        }
 
         noButton.style.position = "absolute";
         noButton.style.left = `${newX}px`;
