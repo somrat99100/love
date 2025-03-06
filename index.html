@@ -7,10 +7,14 @@
   <title>Do You Love Me? - Fun Interactive Game</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body onclick="startMusic()">
 
   <!-- Floating Hearts -->
   <div class="heart-container"></div>
+
+  <header>
+    <h2>Welcome to the Love Game 💖</h2>
+  </header>
 
   <div class="container" id="gameContainer">
     <img src="image.png" alt="Romantic Love Image" class="top-image">
@@ -32,7 +36,7 @@
   <div id="confetti" class="hidden"></div>
 
   <!-- Music Player -->
-  <audio id="bgMusic" loop autoplay>
+  <audio id="bgMusic" loop>
     <source src="background-music.mp3" type="audio/mp3">
   </audio>
 
@@ -55,8 +59,10 @@
       const shareButton = document.getElementById("shareButton");
       const bgMusic = document.getElementById("bgMusic");
 
-      // Try to play music on load
-      bgMusic.play().catch(error => console.log("Autoplay failed:", error));
+      // Start music only when the user interacts
+      window.startMusic = () => {
+        bgMusic.play().catch(error => console.log("Music autoplay blocked:", error));
+      };
 
       // Yes Button Click - Show Love Message and Confetti
       yesButton.addEventListener("click", () => {
@@ -69,18 +75,21 @@
         cheerMusic.play();
       });
 
-      // No Button Moves, But Now It Can Move More Freely!
+      // No Button Moves - But Stays Inside Main Content Area
       noButton.addEventListener("mouseover", () => {
-        const containerRect = document.querySelector(".container").getBoundingClientRect();
+        const screenHeight = window.innerHeight;
+        const screenWidth = window.innerWidth;
+        const footerHeight = document.querySelector("footer").offsetHeight;
+        const headerHeight = document.querySelector("header").offsetHeight;
         const btnWidth = noButton.offsetWidth;
         const btnHeight = noButton.offsetHeight;
 
-        let newX = Math.random() * (containerRect.width - btnWidth);
-        let newY = Math.random() * (containerRect.height - btnHeight);
+        let newX = Math.random() * (screenWidth - btnWidth);
+        let newY = Math.random() * (screenHeight - btnHeight - footerHeight - headerHeight) + headerHeight;
 
-        // Make sure the button stays inside the container
-        newX = Math.max(10, Math.min(newX, containerRect.width - btnWidth - 10));
-        newY = Math.max(10, Math.min(newY, containerRect.height - btnHeight - 10));
+        // Ensure button never goes outside safe area
+        newX = Math.max(10, Math.min(newX, screenWidth - btnWidth - 10));
+        newY = Math.max(headerHeight + 10, Math.min(newY, screenHeight - footerHeight - btnHeight - 10));
 
         noButton.style.position = "absolute";
         noButton.style.left = `${newX}px`;
@@ -123,9 +132,30 @@
       align-items: center;
     }
 
+    header {
+      width: 100%;
+      background-color: #ff4b5c;
+      color: white;
+      padding: 10px;
+      position: fixed;
+      top: 0;
+      text-align: center;
+    }
+
+    footer {
+      width: 100%;
+      background-color: #222;
+      color: white;
+      padding: 10px;
+      position: fixed;
+      bottom: 0;
+      text-align: center;
+    }
+
     /* Main Game Container */
     .container {
       position: relative;
+      margin-top: 60px;
       padding: 20px;
       background: rgba(255, 255, 255, 0.9);
       border-radius: 15px;
@@ -177,7 +207,7 @@
       transform: translate(-50%, -50%);
       width: 280px;
       height: 300px;
-      background-color: red;
+      background-color: green;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -188,27 +218,6 @@
       border-radius: 50%;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
       animation: fadeIn 1s ease-in-out;
-    }
-
-    /* Confetti Styling */
-    #confetti {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      overflow: hidden;
-    }
-
-    .confetti {
-      position: absolute;
-      top: -10px;
-      width: 10px;
-      height: 10px;
-      background-color: #ff5722;
-      opacity: 0.8;
-      animation: confettiFall 3s linear infinite;
     }
 
     /* Share Button */
