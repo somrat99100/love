@@ -28,6 +28,19 @@
     </div>
   </div>
 
+  <!-- Confetti Element -->
+  <div id="confetti" class="hidden"></div>
+
+  <!-- Music Player -->
+  <audio id="bgMusic" loop autoplay>
+    <source src="background-music.mp3" type="audio/mp3">
+  </audio>
+
+  <!-- Share Button -->
+  <div id="shareButton" class="hidden">
+    <button onclick="shareLove()">Share your love!</button>
+  </div>
+
   <footer>
     <p>Developed by <strong>Somrat</strong></p>
   </footer>
@@ -38,11 +51,19 @@
       const noButton = document.getElementById("noButton");
       const gameContainer = document.getElementById("gameContainer");
       const loveMessage = document.getElementById("loveMessage");
+      const confetti = document.getElementById("confetti");
+      const shareButton = document.getElementById("shareButton");
+      const bgMusic = document.getElementById("bgMusic");
 
-      // Yes Button Click - Show Love Message
+      // Yes Button Click - Show Love Message and Confetti
       yesButton.addEventListener("click", () => {
         gameContainer.style.display = "none"; // Hide the game
         loveMessage.classList.remove("hidden"); // Show love message
+        confetti.classList.remove("hidden"); // Show confetti
+        shareButton.classList.remove("hidden"); // Show share button
+        bgMusic.pause();
+        let cheerMusic = new Audio("cheerful-music.mp3");
+        cheerMusic.play();
       });
 
       // No Button Moves, But Stays Inside Container
@@ -58,6 +79,27 @@
         noButton.style.left = `${newX}px`;
         noButton.style.top = `${newY}px`;
       });
+
+      // Confetti Effect
+      function createConfetti() {
+        let confettiPiece = document.createElement('div');
+        confettiPiece.classList.add('confetti');
+        confettiPiece.style.left = Math.random() * window.innerWidth + 'px';
+        confettiPiece.style.animationDelay = Math.random() * 5 + 's';
+        confetti.appendChild(confettiPiece);
+
+        setTimeout(() => {
+          confettiPiece.remove();
+        }, 5000);
+      }
+
+      // Trigger confetti
+      setInterval(createConfetti, 100);
+
+      // Share Love Button
+      window.shareLove = () => {
+        alert("Love shared! 💖");
+      };
     });
   </script>
 
@@ -151,6 +193,46 @@
         opacity: 1;
         transform: translate(-50%, -50%);
       }
+    }
+
+    /* Confetti Styling */
+    #confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .confetti {
+      position: absolute;
+      top: -10px;
+      width: 10px;
+      height: 10px;
+      background-color: #ff5722;
+      opacity: 0.8;
+      animation: confettiFall 3s linear infinite;
+    }
+
+    @keyframes confettiFall {
+      from {
+        transform: translateY(0);
+      }
+      to {
+        transform: translateY(100vh);
+      }
+    }
+
+    /* Share Button */
+    #shareButton {
+      margin-top: 20px;
+    }
+
+    /* Music Player (hidden) */
+    #bgMusic {
+      display: none;
     }
   </style>
 
