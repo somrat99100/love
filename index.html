@@ -1,29 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-E0E31H7GXS"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-E0E31H7GXS');
-  </script>
-
-  <!-- SEO Meta Tags -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="A fun and interactive love game! Click Yes or No and enjoy surprises.">
-  <meta name="keywords" content="love game, prank game, interactive game, fun game, romantic game">
-  <meta name="author" content="Somrat">
-
-  <!-- Open Graph for Social Sharing -->
-  <meta property="og:title" content="Do You Love Me? - Fun Interactive Game">
-  <meta property="og:description" content="A fun and interactive love game where you answer Yes or No!">
-  <meta property="og:image" content="https://lovegame99.netlify.app/image.png">
-  <meta property="og:url" content="https://lovegame99.netlify.app/">
-  <meta name="twitter:card" content="summary_large_image">
-
   <title>Do You Love Me? - Fun Interactive Game</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -32,56 +12,42 @@
   <!-- Floating Hearts -->
   <div class="heart-container"></div>
 
-  <div class="container">
+  <div class="container" id="gameContainer">
     <img src="image.png" alt="Romantic Love Image" class="top-image">
     <h1>Do you love me? ❤️</h1>
     <div class="button-container">
-      <button id="yesButton" aria-label="Yes button">Yes</button>
-      <button id="noButton" aria-label="No button">No</button>
+      <button id="yesButton">Yes</button>
+      <button id="noButton">No</button>
     </div>
   </div>
 
-  <!-- Confetti Canvas -->
-  <canvas id="confettiCanvas"></canvas>
-
-  <!-- Modal -->
-  <div id="customModal" class="modal" aria-live="polite">
-    <div class="modal-content">
-      <span id="modalText"></span>
+  <!-- Love Message Display -->
+  <div id="loveMessage" class="hidden">
+    <div class="heart-shape">
+      <p>I know you love me and I love you too. ❤️</p>
     </div>
   </div>
 
-  <!-- Footer -->
   <footer>
     <p>Developed by <strong>Somrat</strong></p>
   </footer>
-
-  <!-- Audio -->
-  <audio id="yesSound" src="yes-sound.mp3.mp3"></audio>
-  <audio id="noSound" src="no-sound.mp3"></audio>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const yesButton = document.getElementById("yesButton");
       const noButton = document.getElementById("noButton");
-      const yesSound = document.getElementById("yesSound");
-      const noSound = document.getElementById("noSound");
-      const modal = document.getElementById("customModal");
-      const modalText = document.getElementById("modalText");
-      const container = document.querySelector(".button-container");
+      const gameContainer = document.getElementById("gameContainer");
+      const loveMessage = document.getElementById("loveMessage");
 
-      // Yes Button Click - Show Message + Confetti
+      // Yes Button Click - Show Love Message
       yesButton.addEventListener("click", () => {
-        modal.style.display = "block";
-        modalText.innerText = "Yay! I love you too! ❤️";
-        yesSound.play();
-        startConfetti();
-        setTimeout(() => modal.style.display = "none", 3000);
+        gameContainer.style.display = "none"; // Hide the game
+        loveMessage.classList.remove("hidden"); // Show love message
       });
 
       // No Button Moves, But Stays Inside Container
       noButton.addEventListener("mouseover", () => {
-        const containerRect = container.getBoundingClientRect();
+        const containerRect = document.querySelector(".button-container").getBoundingClientRect();
         const btnWidth = noButton.offsetWidth;
         const btnHeight = noButton.offsetHeight;
 
@@ -92,44 +58,7 @@
         noButton.style.left = `${newX}px`;
         noButton.style.top = `${newY}px`;
       });
-
-      // Floating Hearts Effect
-      const heartContainer = document.querySelector(".heart-container");
-      setInterval(() => {
-        const heart = document.createElement("div");
-        heart.classList.add("heart");
-        heart.style.left = Math.random() * 100 + "vw";
-        heart.style.animationDuration = Math.random() * 2 + 3 + "s";
-        heartContainer.appendChild(heart);
-        setTimeout(() => heart.remove(), 5000);
-      }, 500);
     });
-
-    // Confetti Effect
-    function startConfetti() {
-      const canvas = document.getElementById("confettiCanvas");
-      const ctx = canvas.getContext("2d");
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      let confetti = [];
-      for (let i = 0; i < 100; i++) {
-        confetti.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, r: Math.random() * 10 + 2 });
-      }
-      function drawConfetti() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        confetti.forEach(c => {
-          ctx.beginPath();
-          ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
-          ctx.fillStyle = "hsl(" + Math.random() * 360 + ", 100%, 50%)";
-          ctx.fill();
-          c.y += Math.random() * 5;
-          if (c.y > canvas.height) c.y = 0;
-        });
-        requestAnimationFrame(drawConfetti);
-      }
-      drawConfetti();
-      setTimeout(() => { ctx.clearRect(0, 0, canvas.width, canvas.height); }, 3000);
-    }
   </script>
 
   <style>
@@ -145,7 +74,7 @@
       align-items: center;
     }
 
-    /* Main Container */
+    /* Main Game Container */
     .container {
       position: relative;
       padding: 20px;
@@ -154,6 +83,7 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
       text-align: center;
       width: 320px;
+      transition: transform 0.3s ease;
     }
 
     .button-container {
@@ -186,36 +116,41 @@
       position: absolute;
     }
 
-    /* Modal */
-    .modal {
+    /* Love Message Display */
+    .hidden {
       display: none;
-      position: fixed;
+    }
+
+    .heart-shape {
+      position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      width: 250px;
+      height: 220px;
+      background-color: red;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      color: white;
+      border-radius: 50%;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 1s ease-in-out;
     }
 
-    /* Floating Hearts */
-    .heart-container {
-      position: absolute;
-      top: 0;
-      width: 100%;
-    }
-
-    .heart {
-      position: absolute;
-      bottom: 0;
-      color: red;
-      font-size: 24px;
-      animation: float 5s linear infinite;
-    }
-
-    @keyframes float {
-      to { transform: translateY(-100vh); opacity: 0; }
+    /* Animation */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -55%);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+      }
     }
   </style>
 
