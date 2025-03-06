@@ -9,13 +9,6 @@
 </head>
 <body onclick="startMusic()">
 
-  <!-- Floating Hearts -->
-  <div class="heart-container"></div>
-
-  <header>
-    <h2>Welcome to the Love Game 💖</h2>
-  </header>
-
   <div class="container" id="gameContainer">
     <img src="image.png" alt="Romantic Love Image" class="top-image">
     <h1>Do you love me? ❤️</h1>
@@ -32,18 +25,10 @@
     </div>
   </div>
 
-  <!-- Confetti Element -->
-  <div id="confetti" class="hidden"></div>
-
   <!-- Music Player -->
   <audio id="bgMusic" loop>
     <source src="background-music.mp3" type="audio/mp3">
   </audio>
-
-  <!-- Share Button -->
-  <div id="shareButton" class="hidden">
-    <button onclick="shareLove()">Share Love - By Somrat</button>
-  </div>
 
   <footer>
     <p>Developed by <strong>Somrat</strong></p>
@@ -55,68 +40,51 @@
       const noButton = document.getElementById("noButton");
       const gameContainer = document.getElementById("gameContainer");
       const loveMessage = document.getElementById("loveMessage");
-      const confetti = document.getElementById("confetti");
-      const shareButton = document.getElementById("shareButton");
       const bgMusic = document.getElementById("bgMusic");
 
-      // Start music only when the user interacts
+      // Start music when user interacts
       window.startMusic = () => {
-        bgMusic.play().catch(error => console.log("Music autoplay blocked:", error));
+        if (bgMusic.paused) {
+          bgMusic.volume = 1.0; // Ensure full volume when starting
+          bgMusic.play().catch(error => console.log("Music autoplay blocked:", error));
+        }
       };
 
-      // Yes Button Click - Show Love Message and Confetti
+      // Yes Button Click - Show Love Message & Lower Music Volume
       yesButton.addEventListener("click", () => {
-        gameContainer.style.display = "none"; // Hide the game
-        loveMessage.classList.remove("hidden"); // Show love message
-        confetti.classList.remove("hidden"); // Show confetti
-        shareButton.classList.remove("hidden"); // Show share button
-        bgMusic.pause();
+        gameContainer.style.display = "none";
+        loveMessage.classList.remove("hidden");
+
+        // Gradually reduce the background music volume
+        let volume = 1.0;
+        let fadeOut = setInterval(() => {
+          if (volume > 0.1) {
+            volume -= 0.1;
+            bgMusic.volume = volume;
+          } else {
+            clearInterval(fadeOut); // Stop reducing volume
+          }
+        }, 300); // Reduce volume every 300ms
+
+        // Play cheerful music
         let cheerMusic = new Audio("yes-sound.mp3.mp3");
         cheerMusic.play();
       });
 
-      // No Button Moves - But Stays Inside Safe Area
+      // No Button Moves - But Stays Inside the Container
       noButton.addEventListener("mouseover", () => {
-        const screenHeight = window.innerHeight;
-        const screenWidth = window.innerWidth;
-        const footerHeight = document.querySelector("footer").offsetHeight;
-        const headerHeight = document.querySelector("header").offsetHeight;
+        const container = document.querySelector(".container");
+        const containerRect = container.getBoundingClientRect();
         const btnWidth = noButton.offsetWidth;
         const btnHeight = noButton.offsetHeight;
 
-        let newX = Math.random() * (screenWidth - btnWidth);
-        let newY = Math.random() * (screenHeight - btnHeight - footerHeight - headerHeight) + headerHeight;
-
-        // Ensure button never goes inside footer
-        if (newY > screenHeight - footerHeight - btnHeight) {
-          newY = screenHeight - footerHeight - btnHeight - 10;
-        }
+        let newX = Math.random() * (containerRect.width - btnWidth);
+        let newY = Math.random() * (containerRect.height - btnHeight - 10); // Keeps button inside container
 
         noButton.style.position = "absolute";
         noButton.style.left = `${newX}px`;
         noButton.style.top = `${newY}px`;
       });
-
-      // Confetti Effect
-      function createConfetti() {
-        let confettiPiece = document.createElement('div');
-        confettiPiece.classList.add('confetti');
-        confettiPiece.style.left = Math.random() * window.innerWidth + 'px';
-        confettiPiece.style.animationDelay = Math.random() * 5 + 's';
-        confetti.appendChild(confettiPiece);
-
-        setTimeout(() => {
-          confettiPiece.remove();
-        }, 5000);
-      }
-
-      // Trigger confetti
-      setInterval(createConfetti, 100);
-
-      // Share Love Button
-      window.shareLove = () => {
-        alert("Love shared! 💖");
-      };
     });
   </script>
 
@@ -131,44 +99,26 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-    }
-
-    header {
-      width: 100%;
-      background-color: #ff4b5c;
-      color: white;
-      padding: 10px;
-      position: fixed;
-      top: 0;
-      text-align: center;
-    }
-
-    footer {
-      width: 100%;
-      background-color: #222;
-      color: white;
-      padding: 10px;
-      position: fixed;
-      bottom: 0;
-      text-align: center;
+      overflow: hidden; /* Prevents scrolling */
     }
 
     /* Main Game Container */
     .container {
       position: relative;
-      margin-top: 60px;
-      padding: 20px;
-      background: rgba(255, 255, 255, 0.9);
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.95);
       border-radius: 15px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
       text-align: center;
       width: 350px;
+      height: 300px;
       transition: transform 0.3s ease;
     }
 
     .button-container {
       position: relative;
-      height: 100px;
+      height: 80px;
+      width: 100%;
     }
 
     /* Buttons */
@@ -179,6 +129,7 @@
       border: none;
       border-radius: 10px;
       transition: transform 0.3s;
+      position: relative;
     }
 
     #yesButton {
@@ -208,7 +159,7 @@
       transform: translate(-50%, -50%);
       width: 280px;
       height: 300px;
-      background-color: green;
+      background-color: red;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -218,12 +169,14 @@
       color: white;
       border-radius: 50%;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      animation: fadeIn 1s ease-in-out;
     }
 
-    /* Share Button */
-    #shareButton {
-      margin-top: 20px;
+    /* Footer */
+    footer {
+      position: absolute;
+      bottom: 10px;
+      font-size: 14px;
+      color: white;
     }
 
     /* Music Player (hidden) */
