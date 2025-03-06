@@ -33,7 +33,7 @@
 
   <!-- Music Player -->
   <audio id="bgMusic" loop autoplay>
-    <source src="../background-music.mp3" type="audio/mp3">
+    <source src="background-music.mp3" type="audio/mp3">
   </audio>
 
   <!-- Share Button -->
@@ -55,6 +55,9 @@
       const shareButton = document.getElementById("shareButton");
       const bgMusic = document.getElementById("bgMusic");
 
+      // Try to play music on load
+      bgMusic.play().catch(error => console.log("Autoplay failed:", error));
+
       // Yes Button Click - Show Love Message and Confetti
       yesButton.addEventListener("click", () => {
         gameContainer.style.display = "none"; // Hide the game
@@ -66,14 +69,18 @@
         cheerMusic.play();
       });
 
-      // No Button Moves, But Stays Inside Container
+      // No Button Moves, But Now It Can Move More Freely!
       noButton.addEventListener("mouseover", () => {
-        const containerRect = document.querySelector(".button-container").getBoundingClientRect();
+        const containerRect = document.querySelector(".container").getBoundingClientRect();
         const btnWidth = noButton.offsetWidth;
         const btnHeight = noButton.offsetHeight;
 
         let newX = Math.random() * (containerRect.width - btnWidth);
         let newY = Math.random() * (containerRect.height - btnHeight);
+
+        // Make sure the button stays inside the container
+        newX = Math.max(10, Math.min(newX, containerRect.width - btnWidth - 10));
+        newY = Math.max(10, Math.min(newY, containerRect.height - btnHeight - 10));
 
         noButton.style.position = "absolute";
         noButton.style.left = `${newX}px`;
@@ -124,13 +131,13 @@
       border-radius: 15px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
       text-align: center;
-      width: 320px;
+      width: 350px;
       transition: transform 0.3s ease;
     }
 
     .button-container {
       position: relative;
-      height: 60px;
+      height: 100px;
     }
 
     /* Buttons */
@@ -168,9 +175,9 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 300px;
-      height: 350px;
-      background-color: green;
+      width: 280px;
+      height: 300px;
+      background-color: red;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -181,18 +188,6 @@
       border-radius: 50%;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
       animation: fadeIn 1s ease-in-out;
-    }
-
-    /* Animation */
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translate(-50%, -55%);
-      }
-      to {
-        opacity: 1;
-        transform: translate(-50%, -50%);
-      }
     }
 
     /* Confetti Styling */
@@ -214,15 +209,6 @@
       background-color: #ff5722;
       opacity: 0.8;
       animation: confettiFall 3s linear infinite;
-    }
-
-    @keyframes confettiFall {
-      from {
-        transform: translateY(0);
-      }
-      to {
-        transform: translateY(100vh);
-      }
     }
 
     /* Share Button */
